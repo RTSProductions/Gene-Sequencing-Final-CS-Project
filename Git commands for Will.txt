@@ -1,0 +1,3 @@
+git add . - uploads all the files
+git commit -m "[whatever you want to put]" - creates a new version
+git push - uploads your changes to github

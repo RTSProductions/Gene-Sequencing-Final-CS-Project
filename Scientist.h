@@ -1,4 +1,6 @@
-#include <vector>
+#ifndef SCIENTIST_H
+#define SCIENTIST_H
+
 #include <string>
 
 
@@ -11,9 +13,9 @@ int efficiency;
 int insight;
 int discoveryPoints;
 
-
+bool taken;
 };
 
+extern Scientist scientists[5];
 
-
-
+#endif;

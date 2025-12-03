@@ -6,6 +6,7 @@
 
 using namespace std;
 
+extern Scientist scientists[5];
 
 int main() {
 // set up the board and players
@@ -57,12 +58,12 @@ while (true) {
 
             cout << "Sorry that choice is invalid, please try again.\n";
      }
-
+    }
      cout << "Player 1 has selected: "<< p1.getCharacter().name<<"\n Great choice!\n\n";
 
 //I still need to make system that allows player to enter their name
 //Player Two's turn is after this to put in info
-        }
+        
 
 
 

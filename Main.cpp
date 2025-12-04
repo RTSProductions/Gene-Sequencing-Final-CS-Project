@@ -19,7 +19,18 @@ int main()
     cout << "============================\n\n";
     //choose the scientist (Player 1)
 
-    cout << "Player 1, please choose your Scientist:\n\n" << endl;
+    cout << "Player 1, please enter a name\nName: ";
+
+    // Player 1 name
+    string p1Name;
+    cin >> p1Name;
+    p1.setName(p1Name);
+
+    cout << "Welcome " << p1.getName() << "!\n";
+
+    cout << p1.getName() << ", please choose your Scientist:\n\n" << endl;
+
+
 
     for (int i = 0; i < 5; i++)
     {
@@ -35,6 +46,7 @@ int main()
 
     int choice1;
     //Now we can only have one scientist so make while loop for errors or repeats
+    // Player 1
     while (true) 
     {
         cout << "Enter choice (1-5): ";
@@ -48,9 +60,7 @@ int main()
             {
                 scientists[choice1 -1].taken = true;
                 p1.setCharacter(scientists[choice1 - 1]);
-                string p1Name;
-                cin >> p1Name;
-                p1.setName(p1Name);
+                cout << "Player 1 has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
                 break;
             } 
             else 
@@ -63,10 +73,46 @@ int main()
 
             cout << "Sorry that choice is invalid, please try again.\n";
         }
+    }
 
-        cout << "Player 1 has selected: "<< p1.getCharacter().name<<"\n Great choice!\n\n";
+    // Deal with player 2
 
-        //I still need to make system that allows player to enter their name Player Two's turn is after this to put in info
+    cout << "Player 2, please enter a name\nName: ";
+
+    // Player 2 name
+    string p2Name;
+    cin >> p2Name;
+    p2.setName(p2Name);
+
+    cout << "Welcome " << p2.getName() << "!\n";
+
+    cout << p2.getName() << ", please choose your Scientist:\n\n" << endl;
+
+    // Player 2 loop
+    while (true) 
+    {
+        cout << "Enter choice (1-5): ";
+        cin >> choice1;
+
+        if (choice1 >= 1 && choice1 <= 5)
+        {
+            if(!scientists[choice1 -1].taken)
+            {
+                scientists[choice1 -1].taken = true;
+                p1.setCharacter(scientists[choice1 - 1]);
+                cout << "Player 1 has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
+                break;
+            } 
+            else 
+            {
+                cout <<"Sorry, that scientist is already taken.\n";
+            } 
+        } 
+        else 
+        {
+
+            cout << "Sorry that choice is invalid, please try again.\n";
+        }
     }
 
 

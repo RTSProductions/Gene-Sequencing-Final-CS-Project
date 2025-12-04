@@ -99,8 +99,8 @@ int main()
             if(!scientists[choice1 -1].taken)
             {
                 scientists[choice1 -1].taken = true;
-                p1.setCharacter(scientists[choice1 - 1]);
-                cout << "Player 1 has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
+                p2.setCharacter(scientists[choice1 - 1]);
+                cout << "Player 1 has selected: "<< p2.getCharacter().name <<"\n Great choice!\n\n";
                 break;
             } 
             else 

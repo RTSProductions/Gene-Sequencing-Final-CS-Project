@@ -4,16 +4,17 @@
 #include <string>
 
 
-struct Scientist {
+struct Scientist 
+{
 
-std::string name;
-int experience;
-int accuracy;
-int efficiency;
-int insight;
-int discoveryPoints;
+    std::string name;
+    int experience;
+    int accuracy;
+    int efficiency;
+    int insight;
+    int discoveryPoints;
 
-bool taken;
+    bool taken;
 };
 
 extern Scientist scientists[5];

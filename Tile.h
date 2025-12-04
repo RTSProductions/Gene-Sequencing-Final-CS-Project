@@ -6,4 +6,4 @@ struct Tile
     char color;
 };
 
-#endif;
+#endif

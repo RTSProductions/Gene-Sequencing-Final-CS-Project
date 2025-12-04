@@ -19,4 +19,4 @@ struct Scientist
 
 extern Scientist scientists[5];
 
-#endif;
+#endif

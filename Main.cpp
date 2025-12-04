@@ -3,12 +3,17 @@
 #include "Player.h"
 #include "Board.h"
 #include "Tile.h"
+#include <vector>
 
 using namespace std;
 
+std::vector<Scientist> scientists;
 
 int main() 
 {
+    // Initialize the scierntists 
+    scientists = loadScientists("data/characters.txt");
+
     // set up the board and players
     Board board;
     Player p1, p2;

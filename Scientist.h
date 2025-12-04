@@ -17,6 +17,7 @@ struct Scientist
     bool taken;
 };
 
-extern Scientist scientists[5];
+// Function to read scientists from text
+std::vector<Scientist> loadScientists(const std::string &filename); 
 
 #endif

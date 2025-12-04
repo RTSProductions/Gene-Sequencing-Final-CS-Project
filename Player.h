@@ -19,17 +19,23 @@ class Player
         //just a default constuctor
         Player()  
         {
-
-        name = "";
-        advisor = "";
-        pathType = "";
-        position = 0;
-        discoveryPoints = 20000;
-        accuracy = 0;
-        efficiency = 0;
-        insight = 0;
-
+            name = "";
+            advisor = "";
+            pathType = "";
+            position = 0;
+            discoveryPoints = 20000;
+            accuracy = 0;
+            efficiency = 0;
+            insight = 0;
         }
-        //Regin Help me with the getters and setters bro lmao
+
+        // Getters
+        Scientist getCharacter() const;
+        std::string getName() const;
+
+        // Setters
+        void setCharacter(Scientist character);
+        void setName(std::string name);
+
 
 };

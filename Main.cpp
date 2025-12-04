@@ -21,9 +21,9 @@ int main()
 
     cout << "Player 1, please choose your Scientist:\n\n" << endl;
 
-    for (int i =0; i<5; i++)
+    for (int i = 0; i < 5; i++)
     {
-        cout<< i +1 << ". " << scientists[i].name
+        cout<< i + 1 << ". " << scientists[i].name
             <<" Experience: " << scientists[i].experience
             <<" Accuracy: " << scientists[i].accuracy
             <<" Efficiency:" << scientists[i].efficiency
@@ -37,9 +37,9 @@ int main()
     //Now we can only have one scientist so make while loop for errors or repeats
     while (true) 
     {
-
-        cout << "Enter choice (1-5):";
+        cout << "Enter choice (1-5): ";
         cin >> choice1;
+
 
         //basics is complete now this if is for errors mostly and when correct choice is made
         if (choice1 >= 1 && choice1 <= 5) //has to be avaible #

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-std::vector<Scientist> scientists;
+vector<Scientist> scientists;
 
 int main() 
 {
@@ -65,7 +65,7 @@ int main()
             {
                 scientists[choice1 -1].taken = true;
                 p1.setCharacter(scientists[choice1 - 1]);
-                cout << "Player 1 has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
+                cout << p1.getName() << " has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
                 break;
             } 
             else 
@@ -104,8 +104,7 @@ int main()
             if(!scientists[choice1 -1].taken)
             {
                 scientists[choice1 -1].taken = true;
-                p2.setCharacter(scientists[choice1 - 1]);
-                cout << "Player 1 has selected: "<< p2.getCharacter().name <<"\n Great choice!\n\n";
+               cout << p2.getName() << " has selected: "<< p2.getCharacter().name <<"\n Great choice!\n\n";
                 break;
             } 
             else 

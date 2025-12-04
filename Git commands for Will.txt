@@ -1,3 +1,10 @@
 git add . - uploads all the files
 git commit -m "[whatever you want to put]" - creates a new version
-git push - uploads your changes to github
+git push - uploads your changes to GitHub
+
+git pull origin main -will update all your files with my changes
+
+if you get the error "Please commit your changes or stash them before you merge.
+Aborting"
+
+put: git reset --hard origin/main

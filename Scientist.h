@@ -2,6 +2,7 @@
 #define SCIENTIST_H
 
 #include <string>
+#include <vector>
 
 
 struct Scientist 

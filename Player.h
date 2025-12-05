@@ -37,8 +37,8 @@ class Player
         std::string getName() const;
 
         // Setters
-        void setCharacter(Scientist character);
-        void setName(std::string name);
+        void setCharacter(Scientist chara);
+        void setName(std::string n);
 
 
 };

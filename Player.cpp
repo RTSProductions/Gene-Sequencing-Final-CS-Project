@@ -13,11 +13,11 @@ std::string Player::getName() const
 }
 
 // Setters
-void Player::setCharacter(Scientist character)
+void Player::setCharacter(Scientist chara)
 {
-    this->character = character;
+    character = chara;
 }
-void Player::setName(std::string name)
+void Player::setName(std::string n)
 {
-    this->name = name;
+    name = n;
 }

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-std::vector<Scientist> loadScientists(const std::string& filename) 
+std::vector<Scientist> loadScientists(std::string filename) 
 {
     std::vector<Scientist> scientists;
     std::ifstream inFile(filename);
@@ -46,6 +46,7 @@ std::vector<Scientist> loadScientists(const std::string& filename)
         std::getline(ss, temp, ',');
         s.discoveryPoints = std::stoi(temp);
 
+        s.taken = false;
         scientists.push_back(s); // Add to the vector
     }
 

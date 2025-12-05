@@ -19,6 +19,6 @@ struct Scientist
 };
 
 // Function to read scientists from text
-std::vector<Scientist> loadScientists(const std::string &filename); 
+std::vector<Scientist> loadScientists(std::string filename); 
 
 #endif

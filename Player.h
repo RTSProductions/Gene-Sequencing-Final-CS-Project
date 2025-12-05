@@ -10,7 +10,7 @@ class Player
         std::string name;
         std::string advisor; //Can make a no advisor option for the other path chosen
         Scientist character; // most info already in scientist class
-        std::string pathType;
+        int pathType;
         int position;
         int discoveryPoints;
         int accuracy;
@@ -24,7 +24,7 @@ class Player
         {
             name = "";
             advisor = "";
-            pathType = "";
+            pathType = 0;
             position = 0;
             discoveryPoints = 20000;
             accuracy = 0;
@@ -33,26 +33,28 @@ class Player
         }
 
         // Getters
-        Scientist getCharacter() const;
-        std::string getName() const;
+        Scientist getCharacter();
+        std::string getName();
+        int getPathType() {return pathType;}
 
         // Setters
         void setCharacter(Scientist chara);
         void setName(std::string n);
+        void setPathType(int type);
 
         //discoverypoints getters/setters
-        int getDiscoveryPoints() const {return discoveryPoints;}
+        int getDiscoveryPoints() {return discoveryPoints;}
         void setDiscoveryPoints(int dp) { discoveryPoints = dp; }
        //AccuracyGetters/setters
-        int getAccuracy() const { return accuracy; }
+        int getAccuracy() { return accuracy; }
         void setAccuracy(int value) { accuracy = value; }
 
         // Efficiencygetters/setters
-        int getEfficiency() const { return efficiency; }
+        int getEfficiency() { return efficiency; }
         void setEfficiency(int value) { efficiency = value; }
 
         // Insightgetters/setters
-        int getInsight() const { return insight; }
+        int getInsight() { return insight; }
         void setInsight(int value) { insight = value; }
 
 };

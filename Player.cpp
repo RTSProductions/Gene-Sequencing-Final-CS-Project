@@ -2,12 +2,12 @@
 #include <string>
 
 // Getters
-Scientist Player::getCharacter() const
+Scientist Player::getCharacter()
 {
     return character;
 }
 
-std::string Player::getName() const
+std::string Player::getName()
 {
     return name;
 }
@@ -20,4 +20,9 @@ void Player::setCharacter(Scientist chara)
 void Player::setName(std::string n)
 {
     name = n;
+}
+
+void Player::setPathType(int type) 
+{
+    pathType = type;
 }

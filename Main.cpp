@@ -7,10 +7,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <limits>
+#include <random>
+#include <windows.h>
 
 using namespace std;
 
 vector<Scientist> scientists;
+
+std::vector<Tile> fellowshipPath(52);
+std::vector<Tile> directPath(52);
 
 int main() 
 {
@@ -52,25 +57,24 @@ int main()
 
     }
 
-    int choice1;
+    int choice;
     //Now we can only have one scientist so make while loop for errors or repeats
     // Player 1
     while (true) 
     {
-        //choice1 = 0;
         cout << "Enter choice (1-5): ";
         cin.clear(); // Clearing the buffer to prevent infinite looping of invalid character
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin >> choice1;
+        cin >> choice;
 
 
         //basics is complete now this if is for errors mostly and when correct choice is made
-        if (choice1 >= 1 && choice1 <= 5) //has to be avaible #
+        if (choice >= 1 && choice <= 5) //has to be avaible #
         {
-            if(!scientists[choice1 -1].taken)
+            if(!scientists[choice -1].taken)
             {
-                scientists[choice1 -1].taken = true;
-                p1.setCharacter(scientists[choice1 - 1]);
+                scientists[choice -1].taken = true;
+                p1.setCharacter(scientists[choice - 1]);
                 cout << p1.getName() << " has selected: "<< p1.getCharacter().name <<"\nGreat choice!\n\n";
                 break;
             } 
@@ -98,7 +102,21 @@ int main()
     cout << "Welcome " << p2.getName() << "!\n";
 
     cout << p2.getName() << ", please choose your Scientist:\n\n" << endl;
-    choice1 = 0;
+
+    for (int i = 0; i < 5; i++)
+    {
+        if (scientists[i].taken == false)
+        {
+            cout<< i + 1 << ". " << scientists[i].name
+                <<" Experience: " << scientists[i].experience
+                <<" Accuracy: " << scientists[i].accuracy
+                <<" Efficiency:" << scientists[i].efficiency
+                <<" Insight:" << scientists[i].insight
+                <<"\n";
+        }
+
+    }
+    choice = 0;
 
     //Player 2 loop
     while (true) 
@@ -106,14 +124,14 @@ int main()
         cout << "Enter choice (1-5): ";
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin >> choice1;
+        cin >> choice;
 
-        if (choice1 >= 1 && choice1 <= 5)
+        if (choice >= 1 && choice <= 5)
         {
-            if(!scientists[choice1 -1].taken)
+            if(!scientists[choice -1].taken)
             {
-                scientists[choice1 -1].taken = true;
-                p2.setCharacter(scientists[choice1 - 1]);
+                scientists[choice -1].taken = true;
+                p2.setCharacter(scientists[choice - 1]);
                 cout << p2.getName() << " has selected: "<< p2.getCharacter().name <<"\nGreat choice!\n\n";
                 break;
             } 
@@ -130,6 +148,63 @@ int main()
     }
 
 
+    cout << p1.getName() << ", please chooose a path\n";
+
+    int path = 0;
+
+    while (true)
+    {
+        cout << "Enter choice (1-2): ";
+        cin.clear(); // Clearing the buffer to prevent infinite looping of invalid character
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> path;
+
+        if (path >= 1 && path <= 2)
+        {
+            p1.setPathType(path);
+            cout << "You begin to wonder down the path...\n";
+            break;
+        } 
+        else 
+        {
+            cout << "Please choose a real path.\n";
+        }
+    }
+
+    cout << p2.getName() << ", please chooose a path\n";
+
+    path = 0;
+
+    while (true)
+    {
+        cout << "Enter choice (1-2): ";
+        cin.clear(); // Clearing the buffer to prevent infinite looping of invalid character
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> path;
+
+        if (path >= 1 && path <= 2)
+        {
+            p2.setPathType(path);
+            cout << "You decend down the path...\n";
+            break;
+        } 
+        else 
+        {
+            cout << "Please choose a real path.\n";
+        }
+    }
+
+    // ========================== Rest of th Game ==================================
+
+    // Set the start and end tile types
+    fellowshipPath[0].color = 'Y';
+    fellowshipPath[51].color = 'O';
+
+    directPath[0].color = 'Y';
+    directPath[51].color = 'O';
+
+    // Fill the rest with randomized special/regular tiles
+    generateTiles();
 
 }
  struct Event{
@@ -141,9 +216,9 @@ int main()
 
 
 
- };
+};
 
- std::vector<Event> events = {
+std::vector<Event> events = {
 
     {"A critical DNA sample is contaminated", 1, "", -500},
     {"Your risky direct assignments pays off", 0, "", 500},
@@ -158,33 +233,83 @@ int main()
 
 
 
- };
+};
 
- void handleregularTile(Player &player) {
-//50% chance event occurs
-if (rand() % 2 == 0){
+void handleRegularTile(Player player) {
+    //50% chance event occurs
+    if (rand() % 2 == 0){
 
-int index = rand() % events.size(); // picking a random event
-Event e = events[index];
+    int index = rand() % events.size(); // picking a random event
+    Event e = events[index];
 
-//check if the player qualifies for the event
-bool scientist0k = (e.requiredScientist == "" || e.requiredScientist == player.getCharacter().name);
+    //check if the player qualifies for the event
+    bool scientist0k = (e.requiredScientist == "" || e.requiredScientist == player.getCharacter().name);
 
-if (scientist0k){
+    if (scientist0k){
 
-    player.setDiscoveryPoints(player.getDiscoveryPoints() + e.points);
-    std::cout<< "Event has been triggered!"<<e.description
-             <<"Points Change: " << e.points
-             <<"Total Discovery Points:"<<player.getDiscoveryPoints() << "\n";
+        player.setDiscoveryPoints(player.getDiscoveryPoints() + e.points);
+        std::cout<< "Event has been triggered!"<<e.description
+                <<"Points Change: " << e.points
+                <<"Total Discovery Points:"<<player.getDiscoveryPoints() << "\n";
 
-}else{
+    }else{
 
-    std::cout << "Nothing special happened on this tile.\n";
+        std::cout << "Nothing special happened on this tile.\n";
+    }
+    }else{
+        std::cout << "Nothing special happened on this tile.\n";
+    }
 }
-}else{
-    std::cout << "Nothing special happened on this tile.\n";
+
+void clearConsole() 
+{
+    cout << "\033[2J\033[1;1H";
 }
 
+void generateTiles()
+{
+    vector<char> tileOptions = {'G', 'B', 'P', 'T', 'R', 'U'};
+
+    // Randomness seeding for tiles
+    random_device rd;
+    mt19937 gen(rd()); 
+    uniform_int_distribution<> distr(0, tileOptions.size()); // Define the range
+
+    // Randomize tiles
+    for (int i = 1; i < fellowshipPath.size(); i++)
+    {
+        int j = distr(gen);
+        fellowshipPath[i].color = tileOptions[j];
+    }
+
+    for (int i = 1; i < directPath.size(); i++)
+    {
+        int j = distr(gen);
+        directPath[i].color = tileOptions[j];
+    }
+}
+
+void printTile (char t, Tile tile)
+{
+    int color = 0;
+    switch (t)
+    {
+        case 'G':
+            color = 32;
+            break;
+        case 'B':
+            color = 34;
+            break;
+        case 'P':
+            color = 95;
+            break;
+        case 'T':
+            color = 
+    }
+}
+
+void renderTiles()
+{
 
 }
 

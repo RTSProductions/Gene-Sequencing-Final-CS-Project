@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 
 using namespace std;
 
@@ -56,7 +57,10 @@ int main()
     // Player 1
     while (true) 
     {
+        //choice1 = 0;
         cout << "Enter choice (1-5): ";
+        cin.clear(); // Clearing the buffer to prevent infinite looping of invalid character
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> choice1;
 
 
@@ -67,7 +71,7 @@ int main()
             {
                 scientists[choice1 -1].taken = true;
                 p1.setCharacter(scientists[choice1 - 1]);
-                cout << p1.getName() << " has selected: "<< p1.getCharacter().name <<"\n Great choice!\n\n";
+                cout << p1.getName() << " has selected: "<< p1.getCharacter().name <<"\nGreat choice!\n\n";
                 break;
             } 
             else 
@@ -94,11 +98,14 @@ int main()
     cout << "Welcome " << p2.getName() << "!\n";
 
     cout << p2.getName() << ", please choose your Scientist:\n\n" << endl;
+    choice1 = 0;
 
-    // Player 2 loop
+    //Player 2 loop
     while (true) 
     {
         cout << "Enter choice (1-5): ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> choice1;
 
         if (choice1 >= 1 && choice1 <= 5)
@@ -106,8 +113,8 @@ int main()
             if(!scientists[choice1 -1].taken)
             {
                 scientists[choice1 -1].taken = true;
-                p2.setCharacter(scientists[choice1-1]);
-               cout << p2.getName() << " has selected: "<< p2.getCharacter().name <<"\n Great choice!\n\n";
+                p2.setCharacter(scientists[choice1 - 1]);
+                cout << p2.getName() << " has selected: "<< p2.getCharacter().name <<"\nGreat choice!\n\n";
                 break;
             } 
             else 

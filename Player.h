@@ -16,7 +16,7 @@ class Player
         int accuracy;
         int efficiency;
         int insight;
-
+        
     public:
 
         //just a default constuctor
@@ -40,6 +40,20 @@ class Player
         void setCharacter(Scientist character);
         void setName(std::string name);
 
+        //discoverypoints getters/setters
+        int getDiscoveryPoints() const {return discoveryPoints;}
+        void setDiscoveryPoints(int dp) { discoveryPoints = dp; }
+       //AccuracyGetters/setters
+        int getAccuracy() const { return accuracy; }
+        void setAccuracy(int value) { accuracy = value; }
+
+        // Efficiencygetters/setters
+        int getEfficiency() const { return efficiency; }
+        void setEfficiency(int value) { efficiency = value; }
+
+        // Insightgetters/setters
+        int getInsight() const { return insight; }
+        void setInsight(int value) { insight = value; }
 
 };
 

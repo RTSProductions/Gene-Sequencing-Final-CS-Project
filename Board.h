@@ -30,6 +30,9 @@ class Board {
         void displayBoard();
         bool movePlayer(int player_index);
         // Recall we can use const for getter functions
+
+        //allow main.cpp to know what color tile a player landed on
+        char getTileColor(int player_index, int position) const;
         int getPlayerPosition(int player_index) const;
 };
 

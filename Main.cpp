@@ -4,6 +4,8 @@
 #include "Board.h"
 #include "Tile.h"
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -104,6 +106,7 @@ int main()
             if(!scientists[choice1 -1].taken)
             {
                 scientists[choice1 -1].taken = true;
+                p2.setCharacter(scientists[choice1-1]);
                cout << p2.getName() << " has selected: "<< p2.getCharacter().name <<"\n Great choice!\n\n";
                 break;
             } 
@@ -122,7 +125,73 @@ int main()
 
 
 }
+ struct Event{
+    std::string description;
+    int pathType;
+    std::string requiredScientist;
+    int points;
 
+
+
+
+ };
+
+ std::vector<Event> events = {
+
+    {"A critical DNA sample is contaminated", 1, "", -500},
+    {"Your risky direct assignments pays off", 0, "", 500},
+    {"A tip from Dr.Bio-Script helps your script run 50% faster", 1, "Dr. Bio-Script", 800},
+    {"You discovere an overlooked, archived tissue sample from a key lion", 0, "", 600},
+    {"You help a co-worker debug their sequence alingment code", 1, "", 700},
+
+    //Just save this for me to put more random events, i still need to make it to where certain ones will only happen if you have the advisor/doctor you selected
+
+
+
+
+
+
+ };
+
+ void handleregularTile(Player &player) {
+//50% chance event occurs
+if (rand() % 2 == 0){
+
+int index = rand() % events.size(); // picking a random event
+Event e = events[index];
+
+//check if the player qualifies for the event
+bool scientist0k = (e.requiredScientist == "" || e.requiredScientist == player.getCharacter().name);
+
+if (scientist0k){
+
+    player.setDiscoveryPoints(player.getDiscoveryPoints() + e.points);
+    std::cout<< "Event has been triggered!"<<e.description
+             <<"Points Change: " << e.points
+             <<"Total Discovery Points:"<<player.getDiscoveryPoints() << "\n";
+
+}else{
+
+    std::cout << "Nothing special happened on this tile.\n";
+}
+}else{
+    std::cout << "Nothing special happened on this tile.\n";
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 

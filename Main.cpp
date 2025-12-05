@@ -3,11 +3,13 @@
 #include "Player.h"
 #include "Board.h"
 #include "Tile.h"
+#include "TileEffects.h"
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <limits>
 #include <random>
+
 
 using namespace std;
 
@@ -23,7 +25,9 @@ void clearConsole()
 
 int main() 
 {
-    // Initialize the scierntists 
+
+    srand(static_cast<unsigned int>(time(0)));
+    // Initialize the scientists 
     scientists = loadScientists("data/characters.txt");
 
     // set up the board and players
@@ -44,7 +48,7 @@ int main()
     p1.setName(p1Name);
 
     cout << "Welcome " << p1.getName() << "!\n";
-
+//make sure to always reference to player 1 as their chosen name
     cout << p1.getName() << ", please choose your Scientist:\n\n" << endl;
 
 
@@ -152,6 +156,8 @@ int main()
     }
 
 
+
+    //Path Selection
     cout << p1.getName() << ", please chooose a path\n";
 
     int path = 0;
@@ -201,98 +207,61 @@ int main()
     // ========================== Rest of th Game ==================================
 
     // // Set the start and end tile types
-    // fellowshipPath[0].color = 'Y';
-    // fellowshipPath[51].color = 'O';
-
-    // directPath[0].color = 'Y';
-    // directPath[51].color = 'O';
-
-    // // Fill the rest with randomized special/regular tiles
-    // generateTiles();
-
     Board gameBoard;
-    // Gameplay loop
-    bool bothPlayersFinished = false;
+   bool bothPlayersFinished = false;
     while (!bothPlayersFinished)
     {
         clearConsole();
         gameBoard.displayBoard();
-        
+
+        // Move players
+        bool p1Finished = gameBoard.movePlayer(0);
+        bool p2Finished = gameBoard.movePlayer(1);
+
+        // Handle tiles for player 1
+        char tileColor1 = gameBoard.getTileColor(0, gameBoard.getPlayerPosition(0));
+        switch(tileColor1)
+        {
+            case 'G': handleGreenTile(p1); break;
+            case 'B': handleBlueTile(p1); break;
+            case 'P': handlePinkTile(p1); break;
+            case 'T': handleBrownTile(p1); break;
+            case 'R': handleRedTile(p1); break;
+            case 'U': handlePurpleTile(p1); break; // fix: pass player reference
+        }
+
+        // Handle tiles for player 2
+        char tileColor2 = gameBoard.getTileColor(1, gameBoard.getPlayerPosition(1));
+        switch(tileColor2)
+        {
+            case 'G': handleGreenTile(p2); break;
+            case 'B': handleBlueTile(p2); break;
+            case 'P': handlePinkTile(p2); break;
+            case 'T': handleBrownTile(p2); break;
+            case 'R': handleRedTile(p2); break;
+            case 'U': handlePurpleTile(p2); break; // fix: pass player reference
+        }
+
+        bothPlayersFinished = p1Finished && p2Finished;
     }
 
+    //  Winner Announcement
+    cout << "\n============================\n";
+    cout << "        GAME OVER!\n";
+    cout << "============================\n";
+
+    if (p1.getDiscoveryPoints() > p2.getDiscoveryPoints())
+    {
+        cout << " Congratulations " << p1.getName() << "! You are the ultimate Gene Race champion! \n";
+    }
+    else if (p2.getDiscoveryPoints() > p1.getDiscoveryPoints())
+    {
+        cout << " Congratulations " << p2.getName() << "! You are the ultimate Gene Race champion! \n";
+    }
+    else
+    {
+        cout << " It's a tie! Both players are equally brilliant! \n";
+    }
+
+    return 0;
 }
- struct Event{
-    std::string description;
-    int pathType;
-    std::string requiredScientist;
-    int points;
-
-
-
-
-};
-
-std::vector<Event> events = {
-
-    {"A critical DNA sample is contaminated", 1, "", -500},
-    {"Your risky direct assignments pays off", 0, "", 500},
-    {"A tip from Dr.Bio-Script helps your script run 50% faster", 1, "Dr. Bio-Script", 800},
-    {"You discovere an overlooked, archived tissue sample from a key lion", 0, "", 600},
-    {"You help a co-worker debug their sequence alingment code", 1, "", 700},
-
-    //Just save this for me to put more random events, i still need to make it to where certain ones will only happen if you have the advisor/doctor you selected
-
-
-
-
-
-
-};
-
-void handleRegularTile(Player player) {
-    //50% chance event occurs
-    if (rand() % 2 == 0){
-
-    int index = rand() % events.size(); // picking a random event
-    Event e = events[index];
-
-    //check if the player qualifies for the event
-    bool scientist0k = (e.requiredScientist == "" || e.requiredScientist == player.getCharacter().name);
-
-    if (scientist0k){
-
-        player.setDiscoveryPoints(player.getDiscoveryPoints() + e.points);
-        std::cout<< "Event has been triggered!"<<e.description
-                <<"Points Change: " << e.points
-                <<"Total Discovery Points:"<<player.getDiscoveryPoints() << "\n";
-
-    }else{
-
-        std::cout << "Nothing special happened on this tile.\n";
-    }
-    }else{
-        std::cout << "Nothing special happened on this tile.\n";
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-

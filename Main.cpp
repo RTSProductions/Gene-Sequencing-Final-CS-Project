@@ -8,7 +8,6 @@
 #include <ctime>
 #include <limits>
 #include <random>
-#include <windows.h>
 
 using namespace std;
 
@@ -16,6 +15,11 @@ vector<Scientist> scientists;
 
 std::vector<Tile> fellowshipPath(52);
 std::vector<Tile> directPath(52);
+
+void clearConsole() 
+{
+    cout << "\033[2J\033[1;1H";
+}
 
 int main() 
 {
@@ -196,15 +200,25 @@ int main()
 
     // ========================== Rest of th Game ==================================
 
-    // Set the start and end tile types
-    fellowshipPath[0].color = 'Y';
-    fellowshipPath[51].color = 'O';
+    // // Set the start and end tile types
+    // fellowshipPath[0].color = 'Y';
+    // fellowshipPath[51].color = 'O';
 
-    directPath[0].color = 'Y';
-    directPath[51].color = 'O';
+    // directPath[0].color = 'Y';
+    // directPath[51].color = 'O';
 
-    // Fill the rest with randomized special/regular tiles
-    generateTiles();
+    // // Fill the rest with randomized special/regular tiles
+    // generateTiles();
+
+    Board gameBoard;
+    // Gameplay loop
+    bool bothPlayersFinished = false;
+    while (!bothPlayersFinished)
+    {
+        clearConsole();
+        gameBoard.displayBoard();
+        
+    }
 
 }
  struct Event{
@@ -261,57 +275,6 @@ void handleRegularTile(Player player) {
     }
 }
 
-void clearConsole() 
-{
-    cout << "\033[2J\033[1;1H";
-}
-
-void generateTiles()
-{
-    vector<char> tileOptions = {'G', 'B', 'P', 'T', 'R', 'U'};
-
-    // Randomness seeding for tiles
-    random_device rd;
-    mt19937 gen(rd()); 
-    uniform_int_distribution<> distr(0, tileOptions.size()); // Define the range
-
-    // Randomize tiles
-    for (int i = 1; i < fellowshipPath.size(); i++)
-    {
-        int j = distr(gen);
-        fellowshipPath[i].color = tileOptions[j];
-    }
-
-    for (int i = 1; i < directPath.size(); i++)
-    {
-        int j = distr(gen);
-        directPath[i].color = tileOptions[j];
-    }
-}
-
-void printTile (char t, Tile tile)
-{
-    int color = 0;
-    switch (t)
-    {
-        case 'G':
-            color = 32;
-            break;
-        case 'B':
-            color = 34;
-            break;
-        case 'P':
-            color = 95;
-            break;
-        case 'T':
-            color = 
-    }
-}
-
-void renderTiles()
-{
-
-}
 
 
 

@@ -4,7 +4,6 @@
 struct Tile 
 {
     char color;
-    int playerOccupying = 0;
 };
 
 // types:
@@ -16,12 +15,6 @@ struct Tile
 // brown - T
 // red - R
 // purple - U
-
-// what the player types mean
-// 0 - no one
-// 1 - player one is on the tile
-// 2 - player two is on the tile
-// 3 both players are on the tile
 
 
 

@@ -16,6 +16,9 @@ std::string Player::getName()
 void Player::setCharacter(Scientist chara)
 {
     character = chara;
+    accuracy = chara.accuracy;
+    efficiency = chara.efficiency;
+    insight = chara.insight;
 }
 void Player::setName(std::string n)
 {

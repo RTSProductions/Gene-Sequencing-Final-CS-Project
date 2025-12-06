@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <sstream>
+#include <limits>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 //random DNA sequence
@@ -75,7 +79,7 @@ void transcribeDNAtoRNA(string strand) {
 // before looking more into tiles i already put green tiles in main.cpp, im probably just going to keep it there
 
 //Blue Tiles(Equal Length Comparision)
-void handleBlueTile(Player &p) {
+Player handleBlueTile(Player p) {
     cout << "\n Hey! A Blue Tile, Compare DNA sequences (equal length)\n";
     string dna1 = generateRandomDNA(10);
     string dna2 = generateRandomDNA(10);
@@ -83,120 +87,256 @@ void handleBlueTile(Player &p) {
     double score = strandSimilarity(dna1, dna2);
     cout << "Similarity score: " << score << endl;
     p.setDiscoveryPoints(p.getDiscoveryPoints() + int(score * 100)); // reward proportional to similarity
+    return p;
 }
 
 //Pink Tiles (Unequal Length Comparision)
 
-void handlePinkTile(Player &p) {
+Player handlePinkTile(Player p) {
     cout << "\n Hey! A Pink Tile, Compare DNA sequences (unequal length)\n";
     string dna1 = generateRandomDNA(12);
     string dna2 = generateRandomDNA(8);
     int bestIndex = bestStrandMatch(dna1, dna2);
     cout << "DNA1: " << dna1 << "\nDNA2: " << dna2 << "\nBest alignment starts at index " << bestIndex << endl;
     p.setDiscoveryPoints(p.getDiscoveryPoints() + 100); // reward flat points
+    return p;
 }
 
 
 //Red Tiles (mutation)
 
-void handleRedTile(Player &p) {
+Player handleRedTile(Player p) {
     cout << "\n Hey! A Red Tile, Identify mutations\n";
     string dna1 = generateRandomDNA(10);
     string dna2 = generateRandomDNA(10);
     cout << "DNA 1: " << dna1 << "\nDNA 2: " << dna2 << endl;
     identifyMutations(dna1, dna2);
     p.setDiscoveryPoints(p.getDiscoveryPoints() + 150);
+    return p;
 }
 
 //Brown Tiles (DNA to RNA)
-void handleBrownTile(Player &p) {
+Player handleBrownTile(Player p) {
     cout << "Hey! A Brown Tile, Transcribe DNA to RNA\n";
     string dna = generateRandomDNA(10);
     transcribeDNAtoRNA(dna);
     p.setDiscoveryPoints(p.getDiscoveryPoints() + 120);
+    return p;
 }
 
 // Purple tile (riddles)
 
-string riddles[10] = {
-    "I speak without a mouth and hear without ears. What am I?",
-    "The more of me you take, the more you leave behind. What am I?",
-    "I have cities but no houses, forests but no trees, and water but no fish. What am I?",
-    "What has keys but can't open locks?",
-    "What can travel around the world while staying in a corner?",
-    "What has hands but cannot clap?",
-    "What has to be broken before you can use it?",
-    "I’m tall when I’m young, and I’m short when I’m old. What am I?",
-    "What gets wetter as it dries?",
-    "What has a head and a tail but no body?"
-};
+// Utility function to lowercase a string
+string toLower(string str) {
+    for (int i = 0; i < str.size(); i++) {
+        str[i] = tolower(str[i]);
+    }
+    return str;
+}
+
+// Remove articles "a", "an", "the" from start of string
+string removeArticles(string str) {
+    string lowered = toLower(str);
+
+    if (lowered.rfind("a ", 0) == 0) 
+    {
+        str = str.substr(2);
+    }
+    else if (lowered.rfind("an ", 0) == 0) 
+    {
+        str = str.substr(3);
+    }
+    else if (lowered.rfind("the ", 0) == 0) 
+    {
+        str = str.substr(4);
+    }
+
+    // Trim leading spaces
+    while (!str.empty() && str[0] == ' ') str = str.substr(1);
+
+    return str;
+}
+
+// Load riddles and answers from file
+vector<Riddle> loadRiddlesWithAnswers(string filename) {
+    vector<Riddle> riddles;
+    ifstream inFile(filename);
+    if (!inFile) {
+        cerr << "Warning: could not open riddles file: " << filename << endl;
+        return riddles;
+    }
+
+    string line;
+    while (getline(inFile, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string question, answer;
+        if (getline(ss, question, '|') && getline(ss, answer, '|')) {
+            Riddle r;
+            r.question = question;
+            r.answer = answer;
+            riddles.push_back(r);
+        }
+    }
+
+    return riddles;
+}
+
+// string riddles[10] = {
+//     "I speak without a mouth and hear without ears. What am I?",
+//     "The more of me you take, the more you leave behind. What am I?",
+//     "I have cities but no houses, forests but no trees, and water but no fish. What am I?",
+//     "What has keys but can't open locks?",
+//     "What can travel around the world while staying in a corner?",
+//     "What has hands but cannot clap?",
+//     "What has to be broken before you can use it?",
+//     "I’m tall when I’m young, and I’m short when I’m old. What am I?",
+//     "What gets wetter as it dries?",
+//     "What has a head and a tail but no body?"
+// };
 
 // Function to trigger a purple tile
-void handlePurpleTile(Player &p) {
-    srand(time(0));
-    int r = rand() % 10;
-    cout << "Purple Tile! Solve this riddle to gain 500 points:\n";
-    cout << riddles[r] << endl;
+Player handlePurpleTile(Player p, vector<Riddle> riddles) {
+    if (riddles.size() == 0) {
+        cout << "No riddles available.\n";
+        return p;
+    }
+
+    // Pick a random riddle
+    int idx = rand() % (int)riddles.size();
+    Riddle r = riddles[idx];
+
+    cout << "\nPurple Tile — riddle time!\n" << r.question << endl;
+    cout << "Your answer: ";
 
     string answer;
-    cout << "Your answer: ";
-    cin.ignore();
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, answer);
 
-    cout << "Correct! You earn 500 points!\n";
-    p.setDiscoveryPoints(p.getDiscoveryPoints() + 500); 
+    if (answer.size() > 0) {
+        // Normalize answers: lowercase and remove articles
+        string correctAnswer = removeArticles(toLower(r.answer));
+        string givenAnswer = removeArticles(toLower(answer));
+
+        if (correctAnswer == givenAnswer) {
+            cout << "Correct! +500 DP!\n";
+            p.setDiscoveryPoints(p.getDiscoveryPoints() + 500);
+        } else {
+            cout << "Wrong! The correct answer was: " << r.answer << endl;
+            p.setDiscoveryPoints(p.getDiscoveryPoints() - 200);
+        }
+    } else {
+        cout << "No answer — no points.\n";
+    }
+
+    cout << p.getName() << " now has " << p.getDiscoveryPoints() << " DP\n";
+    return p;
 }
 
-struct Event{
-    std::string description;
-    int pathType;
-    std::string requiredScientist;
-    int points;
 
+// std::vector<Event> events = {
 
+//     {"A critical DNA sample is contaminated", 1, "", -500},
+//     {"Your risky direct assignments pays off", 0, "", 500},
+//     {"A tip from Dr.Bio-Script helps your script run 50% faster", 1, "Dr. Bio-Script", 800},
+//     {"You discovere an overlooked, archived tissue sample from a key lion", 0, "", 600},
+//     {"You help a co-worker debug their sequence alingment code", 1, "", 700},
 
-
-};
-
-std::vector<Event> events = {
-
-    {"A critical DNA sample is contaminated", 1, "", -500},
-    {"Your risky direct assignments pays off", 0, "", 500},
-    {"A tip from Dr.Bio-Script helps your script run 50% faster", 1, "Dr. Bio-Script", 800},
-    {"You discovere an overlooked, archived tissue sample from a key lion", 0, "", 600},
-    {"You help a co-worker debug their sequence alingment code", 1, "", 700},
-
-    //Just save this for me to put more random events, i still need to make it to where certain ones will only happen if you have the advisor/doctor you selected
+//     //Just save this for me to put more random events, i still need to make it to where certain ones will only happen if you have the advisor/doctor you selected
 
 
 
 
 
 
-};
+// };
 
-void handleGreenTile(Player player) {
-    //50% chance event occurs
-    if (rand() % 2 == 0){
-
-    int index = rand() % events.size(); // picking a random event
-    Event e = events[index];
-
-    //check if the player qualifies for the event
-    bool scientist0k = (e.requiredScientist == "" || e.requiredScientist == player.getCharacter().name);
-
-    if (scientist0k){
-
-        player.setDiscoveryPoints(player.getDiscoveryPoints() + e.points);
-        std::cout<< "Event has been triggered!"<<e.description
-                <<"Points Change: " << e.points
-                <<"Total Discovery Points:"<<player.getDiscoveryPoints() << "\n";
-
-    }else{
-
-        std::cout << "Nothing special happened on this tile.\n";
+Player handleGreenTile(Player p, vector<Event> events) 
+{
+    if (events.size() == 0 || rand() % 2 == 0) {
+        cout << "Nothing happened.\n";
+        return p;
     }
-    }else{
-        std::cout << "Nothing special happened on this tile.\n";
+
+    Event e = events[rand() % events.size()];
+
+    bool ok = true;
+
+    // scientist requirement
+    if (e.requiredScientist != "" && e.requiredScientist != p.getCharacter().name) {
+        ok = false;
     }
+
+    // path requirement
+    if (e.pathType != -1 && e.pathType != (p.getPathType() - 1)) {
+        ok = false;
+    }
+
+    if (ok) {
+        p.setDiscoveryPoints(p.getDiscoveryPoints() + e.points);
+        cout << "Event: " << e.description << " (DP " << e.points << ")\n";
+    } else {
+        cout << "Event occurred but you did not qualify.\n";
+    }
+
+    return p;
 }
+
+
+double strandSimilarity(string strand1, string strand2) 
+{
+    if (strand1.length() != strand2.length()) 
+    {
+        return 0.0; // Unequal lengths → no similarity
+    }
+
+    int matches = 0;
+    for (int i = 0; i < strand1.length(); i++) 
+    {
+        if (strand1[i] == strand2[i]) 
+        {
+            matches++;
+        }
+    }
+
+    return double(matches) / strand1.length();
+}
+
+
+vector<Event> loadEvents(string filename) 
+{
+    
+    vector<Event> events;
+    ifstream inFile(filename);
+    if (!inFile) 
+    { 
+        cerr << "Warning: could not open events file: " << filename << endl; 
+        return events; 
+    }
+    
+    string line;
+    while (getline(inFile, line)) 
+    {
+        if (line.size() < 2) 
+        {
+            continue;
+        }
+        stringstream ss(line); 
+        Event e; 
+        string token;
+        getline(ss, token, ','); 
+        e.description = token;
+        getline(ss, token, ','); 
+        e.pathType = stoi(token);
+        getline(ss, token, ','); 
+        e.requiredScientist = token;
+        getline(ss, token, ','); 
+        e.points = stoi(token);
+        events.push_back(e);
+    }
+    return events;
+}
+
+

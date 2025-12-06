@@ -4,16 +4,35 @@
 
 #include "Player.h"
 #include <string>
+#include <vector>
 
 using namespace std;
 
-// DNA-based special tiles
-void handleBlueTile(Player &p);   // DNA similarity (equal length)
-void handlePinkTile(Player &p);   // DNA similarity (unequal length)
-void handleRedTile(Player &p);    // Mutation identification
-void handleBrownTile(Player &p);  // DNA → RNA transcription
-void handlePurpleTile(Player &p); // Riddle challenge
-void handleGreenTile(Player &p); //half chance at a event or nothing
+struct Event 
+{
+    string description;
+    int pathType;
+    string requiredScientist;
+    int points;
+};
+
+struct Riddle 
+{
+    string question;
+    string answer;
+};
+
+// Tile handlers: take Player by value, return Player by value
+Player handleBlueTile(Player p);
+Player handlePinkTile(Player p);
+Player handleRedTile(Player p);
+Player handleBrownTile(Player p);
+Player handlePurpleTile(Player p, vector<Riddle> riddles);
+Player handleGreenTile(Player p, vector<Event> events);
+
+// Loaders
+vector<Event> loadEvents(string filename);
+vector<Riddle> loadRiddlesWithAnswers(string filename);
 
 // Helper functions for DNA tasks
 string generateRandomDNA(int length);

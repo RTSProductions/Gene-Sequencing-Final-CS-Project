@@ -1,0 +1,10 @@
+A critical DNA sample is contaminated,1,,-500
+Your risky direct assignments pays off,0,,500
+A tip from Dr.Bio-Script helps your script run 50% faster,1,Dr. Bio-Script,800
+You discover an overlooked archived tissue sample from a key lion,0,,600
+You help a coworker debug their sequence alignment code,1,,700
+A faulty pipette throws off your measurements,1,,-300
+You successfully clean and recover a corrupted dataset,0,,450
+Dr. Helix gives you a shortcut for folding simulations,1,Dr. Helix,900
+You catch an annotation error in a rival labs genome map,0,,700
+An unexpected power outage forces you to redo a long experiment,1,,-400

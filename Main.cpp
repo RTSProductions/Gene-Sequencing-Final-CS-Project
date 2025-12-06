@@ -10,13 +10,11 @@
 #include <limits>
 #include <random>
 
+#include <chrono> // included for sleep function
+#include <thread> // included for sleep function
+
 
 using namespace std;
-
-vector<Scientist> scientists;
-
-std::vector<Tile> fellowshipPath(52);
-std::vector<Tile> directPath(52);
 
 void clearConsole() 
 {
@@ -26,12 +24,12 @@ void clearConsole()
 int main() 
 {
 
+    vector<Scientist> scientists;
     srand(static_cast<unsigned int>(time(0)));
     // Initialize the scientists 
     scientists = loadScientists("data/characters.txt");
 
-    // set up the board and players
-    Board board;
+    // set up the players
     Player p1, p2;
 
     //cool design to make it fun to introduce game
@@ -181,6 +179,29 @@ int main()
         }
     }
 
+    // Apply path bonuses
+    if (p1.getPathType() == 1) {
+        // Fellowship Path
+        p1.setDiscoveryPoints(p1.getDiscoveryPoints() - 5000);
+        p1.setAccuracy(p1.getAccuracy() + 500);
+        p1.setEfficiency(p1.getEfficiency() + 500);
+        p1.setInsight(p1.getInsight() + 1000);
+
+        cout << "\nYou chose Path 1 — The Fellowship Path!\n";
+        cout << "-5000 DP, +500 Accuracy, +500 Efficiency, +1000 Insight.\n\n";
+    }
+    else {
+        // Direct Path
+        p1.setDiscoveryPoints(p1.getDiscoveryPoints() + 5000);
+        p1.setAccuracy(p1.getAccuracy() + 200);
+        p1.setEfficiency(p1.getEfficiency() + 200);
+        p1.setInsight(p1.getInsight() + 200);
+
+        cout << "\nYou chose Path 2 — The Direct Path!\n";
+        cout << "+5000 DP, +200 to all traits.\n\n";
+    }
+
+
     cout << p2.getName() << ", please chooose a path\n";
 
     path = 0;
@@ -204,51 +225,148 @@ int main()
         }
     }
 
+    // Apply path bonuses
+    if (p2.getPathType() == 1) {
+        // Fellowship Path
+        p2.setDiscoveryPoints(p2.getDiscoveryPoints() - 5000);
+        p2.setAccuracy(p2.getAccuracy() + 500);
+        p2.setEfficiency(p2.getEfficiency() + 500);
+        p2.setInsight(p2.getInsight() + 1000);
+
+        cout << "\nYou chose Path 1 — The Fellowship Path!\n";
+        cout << "-5000 DP, +500 Accuracy, +500 Efficiency, +1000 Insight.\n\n";
+    }
+    else {
+        // Direct Path
+        p2.setDiscoveryPoints(p2.getDiscoveryPoints() + 5000);
+        p2.setAccuracy(p2.getAccuracy() + 200);
+        p2.setEfficiency(p2.getEfficiency() + 200);
+        p2.setInsight(p1.getInsight() + 200);
+
+        cout << "\nYou chose Path 2 — The Direct Path!\n";
+        cout << "+5000 DP, +200 to all traits.\n\n";
+    }
+
+    cout << "Path choice influences event eligibility and late-game bonuses, not board layout\n";
+
     // ========================== Rest of th Game ==================================
 
-    // // Set the start and end tile types
+    vector<Event> events = loadEvents("data/random_events.txt");
+    vector<Riddle> riddles = loadRiddlesWithAnswers("data/riddles.txt");
+
+
+    // Seed RNG
+    srand((unsigned int)time(0));
     Board gameBoard;
-   bool bothPlayersFinished = false;
+    bool bothPlayersFinished = false;
     while (!bothPlayersFinished)
     {
         clearConsole();
         gameBoard.displayBoard();
 
-        // Move players
-        bool p1Finished = gameBoard.movePlayer(0);
-        bool p2Finished = gameBoard.movePlayer(1);
+        // Player 1 turn
+        cout << "\n--- " << p1.getName() << "'s turn ---\n";
+        cout << "Press ENTER to spin the spinner...";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+
+
+        // Spinner
+        int roll1 = rand() % 6 + 1;
+        cout << p1.getName() << " rolled a " << roll1 << "!\n";
+
+        for (int i = 0; i < roll1; i++)
+        {
+            if (gameBoard.movePlayer(0))
+            {
+                break;
+            }
+        }
+        
 
         // Handle tiles for player 1
-        char tileColor1 = gameBoard.getTileColor(0, gameBoard.getPlayerPosition(0));
+        int pos1 = gameBoard.getPlayerPosition(0);
+        char tileColor1 = gameBoard.getTileColor(0, pos1);
         switch(tileColor1)
         {
-            case 'G': handleGreenTile(p1); break;
-            case 'B': handleBlueTile(p1); break;
-            case 'P': handlePinkTile(p1); break;
-            case 'T': handleBrownTile(p1); break;
-            case 'R': handleRedTile(p1); break;
-            case 'U': handlePurpleTile(p1); break; // fix: pass player reference
+            case 'G': p1 = handleGreenTile(p1, events); break;
+            case 'B': p1 = handleBlueTile(p1); break;
+            case 'P': p1 = handlePinkTile(p1); break;
+            case 'T': p1 = handleBrownTile(p1); break;
+            case 'R': p1 = handleRedTile(p1); break;
+            case 'U': p1 = handlePurpleTile(p1, riddles); break; 
+            default: break;
+        }
+
+        this_thread::sleep_for(chrono::milliseconds(700));
+
+        // Player 2 turn
+        clearConsole();
+        gameBoard.displayBoard();
+
+        cout << "\n--- " << p2.getName() << "'s turn ---\n";
+        cout << "Press ENTER to spin the spinner...";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+        int roll2 = rand() % 6 + 1;
+        cout << p2.getName() << " rolled a " << roll2 << "!\n";
+
+        for (int i = 0; i < roll2; i++)
+        {
+            if (gameBoard.movePlayer(1))
+            {
+                break;
+            }
         }
 
         // Handle tiles for player 2
-        char tileColor2 = gameBoard.getTileColor(1, gameBoard.getPlayerPosition(1));
+        int pos2 = gameBoard.getPlayerPosition(1);
+        char tileColor2 = gameBoard.getTileColor(1, pos2);
         switch(tileColor2)
         {
-            case 'G': handleGreenTile(p2); break;
-            case 'B': handleBlueTile(p2); break;
-            case 'P': handlePinkTile(p2); break;
-            case 'T': handleBrownTile(p2); break;
-            case 'R': handleRedTile(p2); break;
-            case 'U': handlePurpleTile(p2); break; // fix: pass player reference
+            case 'G': p2 = handleGreenTile(p2, events); break;
+            case 'B': p2 = handleBlueTile(p2); break;
+            case 'P': p2 = handlePinkTile(p2); break;
+            case 'T': p2 = handleBrownTile(p2); break;
+            case 'R': p2 = handleRedTile(p2); break;
+            case 'U': p2 = handlePurpleTile(p2, riddles); break; 
         }
 
+        this_thread::sleep_for(chrono::milliseconds(800));
+
+        bool p1Finished = (gameBoard.getPlayerPosition(0) == 51);
+        bool p2Finished = (gameBoard.getPlayerPosition(1) == 51);
         bothPlayersFinished = p1Finished && p2Finished;
+
+        // Print interim DP totals
+        cout << "\n--- Scores ---\n";
+        cout << p1.getName() << ": " << p1.getDiscoveryPoints() << " DP\n";
+        cout << p2.getName() << ": " << p2.getDiscoveryPoints() << " DP\n";
+
+        // small delay so they can see the score
+        this_thread::sleep_for(chrono::milliseconds(1000));
     }
 
+    // Final scoring: convert traits -> DP as required
+    auto finalize = [](Player pl) {
+        int acc = pl.getCharacter().accuracy;
+        int eff = pl.getCharacter().efficiency;
+        int ins = pl.getCharacter().insight;
+        int add = ((acc / 100) + (eff / 100) + (ins / 100)) * 1000;
+        pl.setDiscoveryPoints(pl.getDiscoveryPoints() + add);
+        return pl;
+    };
+
+    p1 = finalize(p1);
+    p2 = finalize(p2);
+
+
     //  Winner Announcement
-    cout << "\n============================\n";
-    cout << "        GAME OVER!\n";
-    cout << "============================\n";
+    cout << "\n============================ GAME OVER ==========================\n";
+    cout << p1.getName() << " final DP: " << p1.getDiscoveryPoints() << "\n";
+    cout << p2.getName() << " final DP: " << p2.getDiscoveryPoints() << "\n";
 
     if (p1.getDiscoveryPoints() > p2.getDiscoveryPoints())
     {

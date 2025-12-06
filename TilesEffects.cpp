@@ -9,6 +9,12 @@
 #include <chrono>
 
 using namespace std;
+
+void clearAnswerInput()
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
 //random DNA sequence
 string generateRandomDNA(int length) {
     string dna = "";
@@ -208,11 +214,10 @@ Player handlePurpleTile(Player p, vector<Riddle> riddles) {
     Riddle r = riddles[idx];
 
     cout << "\nPurple Tile — riddle time!\n" << r.question << endl;
-    cout << "Your answer: ";
+    cout << "Your answer: \n";
 
     string answer;
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    clearAnswerInput();
     getline(cin, answer);
 
     if (answer.size() > 0) {
@@ -261,24 +266,28 @@ Player handleGreenTile(Player p, vector<Event> events)
     }
 
     Event e = events[rand() % events.size()];
+    bool qualifies = true;
 
-    bool ok = true;
-
-    // scientist requirement
-    if (e.requiredScientist != "" && e.requiredScientist != p.getCharacter().name) {
-        ok = false;
+    // Check scientist requirement
+    if (!e.requiredScientist.empty() &&
+        e.requiredScientist != p.getCharacter().name) 
+    {
+        qualifies = false;
     }
 
-    // path requirement
-    if (e.pathType != -1 && e.pathType != (p.getPathType() - 1)) {
-        ok = false;
+    // Check path requirement
+    if (e.pathType != -1 &&
+        e.pathType != (p.getPathType() - 1)) 
+    {
+        qualifies = false;
     }
 
-    if (ok) {
+    if (qualifies) {
         p.setDiscoveryPoints(p.getDiscoveryPoints() + e.points);
         cout << "Event: " << e.description << " (DP " << e.points << ")\n";
-    } else {
-        cout << "Event occurred but you did not qualify.\n";
+    } 
+    else {
+        cout << "Event occurred, but you did not qualify.\n";
     }
 
     return p;

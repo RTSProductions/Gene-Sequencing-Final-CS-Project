@@ -20,6 +20,12 @@ void clearConsole()
 {
     cout << "\033[2J\033[1;1H";
 }
+void clearInput()
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
 
 int main() 
 {
@@ -32,11 +38,57 @@ int main()
     // set up the players
     Player p1, p2;
 
-    //cool design to make it fun to introduce game
-    cout << "============================\n";
-    cout << "  WELCOME TO GENE RACE!\n";
-    cout << "============================\n\n";
-    //choose the scientist (Player 1)
+    // ===================== MAIN MENU ===================== //
+    while (true)
+    {
+        clearConsole();
+        cout << "============================\n";
+        cout << "       GENE RACE MENU\n";
+        cout << "============================\n";
+        cout << "1. Start Game\n";
+        cout << "2. How to Play\n";
+        cout << "3. Exit\n\n";
+        cout << "Enter choice: ";
+
+        int menuChoice;
+        cin >> menuChoice;
+
+        if (menuChoice == 1)
+        {
+            break; // continue into the game
+        }
+        else if (menuChoice == 2)
+        {
+            clearConsole();
+            cout << "=========== HOW TO PLAY ===========\n";
+            cout << "- Choose a Scientist with unique stats.\n";
+            cout << "- Choose a research path:\n";
+            cout << "    1) Fellowship: slower start, big late bonuses.\n";
+            cout << "    2) Direct Path: fast start, smaller late rewards.\n";
+            cout << "- Roll the spinner to move along the research track.\n";
+            cout << "- Land on colored tiles that trigger events:\n";
+            cout << "    G = Random event (DP gain/loss)\n";
+            cout << "    B = DNA similarity challenge\n";
+            cout << "    P = Strand alignment challenge\n";
+            cout << "    T = DNA→RNA transcription\n";
+            cout << "    R = Mutation identification\n";
+            cout << "    U = Riddle challenge\n";
+            cout << "- First to reach the end AND has most Discovery Points wins!\n\n";
+            cout << "Press ENTER to return to menu...";
+            clearInput();
+            cin.get();
+        }
+        else if (menuChoice == 3)
+        {
+            cout << "Goodbye!\n";
+            return 0;
+        }
+        else
+        {
+            cout << "Invalid choice, try again.\n";
+            this_thread::sleep_for(chrono::milliseconds(800));
+        }
+    }
 
     cout << "Player 1, please enter a name\nName: ";
 
@@ -160,6 +212,8 @@ int main()
 
     int path = 0;
 
+    cout << "Chose either:\n1. The Fellowship path\n2. The Direct Path\n";
+
     while (true)
     {
         cout << "Enter choice (1-2): ";
@@ -267,8 +321,7 @@ int main()
         // Player 1 turn
         cout << "\n--- " << p1.getName() << "'s turn ---\n";
         cout << "Press ENTER to spin the spinner...";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        clearInput();
         cin.get();
 
 
@@ -307,8 +360,7 @@ int main()
 
         cout << "\n--- " << p2.getName() << "'s turn ---\n";
         cout << "Press ENTER to spin the spinner...";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        clearInput();
         cin.get();
         int roll2 = rand() % 6 + 1;
         cout << p2.getName() << " rolled a " << roll2 << "!\n";
